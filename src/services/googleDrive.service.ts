@@ -1,5 +1,6 @@
-// src/services/googleDrive.service.ts
 import fs from 'fs'
+
+import type { Express } from 'express'
 
 import drive from '../config/googleClient.js'
 
@@ -34,12 +35,14 @@ export const uploadFileToDrive = async (file: Express.Multer.File) => {
 
 export const listFilesFromDrive = async () => {
   try {
+    const query = `'${FOLDER_ID}' in parents and trashed = false`
+
     const { data } = await drive.files.list({
-      q: `'${FOLDER_ID}' in parents`,
-      fields: 'files(id, name, mimeType)',
+      q: query,
+      fields: 'files(id, name, mimeType, parents)',
     })
 
-    return data.files || []
+    return data.files ?? []
   } catch (error: unknown) {
     const err = error instanceof Error ? error.message : 'unknown error'
     throw new Error(`[listFilesFromDrive] ${err}`)
