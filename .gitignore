@@ -1,3 +1,7 @@
 node_modules
 .env
 dist
+src/config/credentials.json
+src/config/token.json
+tmp
+
